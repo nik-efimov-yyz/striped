@@ -1,0 +1,43 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "customer.updated",
+  "object": "event",
+  "data": {
+    "object": {
+      "object": "customer",
+      "created": 1373252613,
+      "id": "cus_00000000000000",
+      "livemode": false,
+      "description": "lol",
+      "active_card": {
+        "object": "card",
+        "last4": "4242",
+        "type": "Visa",
+        "exp_month": 7,
+        "exp_year": 2014,
+        "fingerprint": "fV8slC2NIoL48vhb",
+        "country": "US",
+        "name": null,
+        "address_line1": null,
+        "address_line2": null,
+        "address_city": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_country": null,
+        "cvc_check": "pass",
+        "address_line1_check": null,
+        "address_zip_check": null
+      },
+      "email": "test@example.com",
+      "delinquent": false,
+      "subscription": null,
+      "discount": null,
+      "account_balance": 0
+    },
+    "previous_attributes": {
+      "description": "Old description"
+    }
+  }
+}

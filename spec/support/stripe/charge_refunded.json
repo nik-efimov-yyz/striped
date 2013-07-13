@@ -1,0 +1,50 @@
+{
+  "created": 1326853478,
+  "livemode": false,
+  "id": "evt_00000000000000",
+  "type": "charge.refunded",
+  "object": "event",
+  "data": {
+    "object": {
+      "id": "ch_00000000000000",
+      "object": "charge",
+      "created": 1370919358,
+      "livemode": false,
+      "paid": true,
+      "amount": 0,
+      "currency": "cad",
+      "refunded": true,
+      "fee": 0,
+      "fee_details": [
+
+      ],
+      "card": {
+        "object": "card",
+        "last4": "4242",
+        "type": "Visa",
+        "exp_month": 6,
+        "exp_year": 2014,
+        "fingerprint": "fV8slC2NIoL48vhb",
+        "country": "US",
+        "name": null,
+        "address_line1": null,
+        "address_line2": null,
+        "address_city": null,
+        "address_state": null,
+        "address_zip": null,
+        "address_country": null,
+        "cvc_check": "pass",
+        "address_line1_check": null,
+        "address_zip_check": null
+      },
+      "captured": false,
+      "failure_message": null,
+      "failure_code": null,
+      "amount_refunded": 0,
+      "customer": null,
+      "invoice": null,
+      "description": null,
+      "dispute": null
+    }
+  }
+}

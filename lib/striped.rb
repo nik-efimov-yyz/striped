@@ -1,0 +1,5 @@
+require "striped/core"
+require "striped/errors"
+require "striped/model/base"
+require "striped/controller/base"
+require "striped/version"
