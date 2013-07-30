@@ -7,6 +7,7 @@ describe "Striped Configuration" do
   describe "Default Configuration" do
     its(:active_statuses) { should == [:active, :trialing, :past_due] }
     its(:auto_sync_with_stripe) { should == true }
+    its(:auto_create_stripe_account) { should == true }
     its(:base_controller) { should == "ApplicationController" }
     its(:current_account_method) { should == :current_user }
     its(:overdue_status) { should == :past_due }

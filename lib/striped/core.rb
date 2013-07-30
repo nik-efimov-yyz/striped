@@ -13,6 +13,10 @@ module Striped
   mattr_accessor :auto_sync_with_stripe
   self.auto_sync_with_stripe = true
 
+  # Whether or not to create Stripe account automatically when account base model is created
+  mattr_accessor :auto_create_stripe_account
+  self.auto_create_stripe_account = true
+
   # The Parent Class name from which Striped controller will be inheriting from
   mattr_accessor :base_controller
   self.base_controller = "ApplicationController"

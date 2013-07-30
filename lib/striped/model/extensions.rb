@@ -3,6 +3,8 @@ module Striped::Model::Extensions
   extend ActiveSupport::Concern
 
   included do
+    before_save :initialize_stripe,
+      unless: Proc.new { |account| Striped.auto_create_stripe_account == false || account.has_stripe_account? }
     after_save :sync_with_stripe, if: lambda { Striped.auto_sync_with_stripe }
   end
 
@@ -24,16 +26,32 @@ module Striped::Model::Extensions
   end
 
   def stripe
-    return nil unless stripe_ready?
-    @_stripe ||= Stripe::Customer.retrieve(_stripe_customer_id)
+    return nil unless has_stripe_account?
+    @_stripe ||= Stripe::Customer.retrieve(stripe_identifier)
   end
 
-  def stripe_ready?
-    _stripe_customer_id.present?
+  def stripe_identifier
+    self.send(Striped.stripe_customer_id_column)
+  end
+
+  def stripe_identifier= (value)
+    self.send((Striped.stripe_customer_id_column.to_s + "=").to_sym, value)
+  end
+
+  def has_stripe_account?
+    stripe_identifier.present?
+  end
+
+  def initialize_stripe
+    stripe_response = Stripe::Customer.create({
+        email: self.email
+    })
+    self.stripe_identifier = stripe_response.id
+    true
   end
 
   def sync_with_stripe
-    return true unless stripe_ready?
+    return true unless has_stripe_account?
 
     # Updating email and name columns
     if self.respond_to?(:email)
@@ -44,18 +62,5 @@ module Striped::Model::Extensions
     end
 
   end
-
-  private
-
-  def pull_from_stripe
-
-  end
-
-  def _stripe_customer_id
-    self.send(Striped.stripe_customer_id_column)
-  end
-
-
-
 
 end
