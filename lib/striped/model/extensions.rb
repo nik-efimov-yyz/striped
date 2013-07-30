@@ -3,7 +3,7 @@ module Striped::Model::Extensions
   extend ActiveSupport::Concern
 
   included do
-    before_save :synchronize_with_stripe
+    after_save :sync_with_stripe, if: lambda { Striped.auto_sync_with_stripe }
   end
 
   module ClassMethods
@@ -23,9 +23,39 @@ module Striped::Model::Extensions
     Striped.overdue_status.to_sym == self.status.to_sym
   end
 
-  def synchronize_with_stripe
+  def stripe
+    return nil unless stripe_ready?
+    @_stripe ||= Stripe::Customer.retrieve(_stripe_customer_id)
+  end
+
+  def stripe_ready?
+    _stripe_customer_id.present?
+  end
+
+  def sync_with_stripe
+    return true unless stripe_ready?
+
+    # Updating email and name columns
+    if self.respond_to?(:email)
+      if self.email != stripe.email
+        stripe.email = self.email
+        stripe.save
+      end
+    end
 
   end
+
+  private
+
+  def pull_from_stripe
+
+  end
+
+  def _stripe_customer_id
+    self.send(Striped.stripe_customer_id_column)
+  end
+
+
 
 
 end

@@ -1,0 +1,21 @@
+{
+  "object": "customer",
+  "created": 1375150888,
+  "id": "cus_00000000000000",
+  "livemode": false,
+  "description": null,
+  "email": "joe@example.com",
+  "delinquent": false,
+  "subscription": null,
+  "discount": null,
+  "account_balance": 0,
+  "cards": {
+    "object": "list",
+    "count": 0,
+    "url": "/v1/customers/cus_2I2rr3RjaCCL2z/cards",
+    "data": [
+
+    ]
+  },
+  "default_card": null
+}

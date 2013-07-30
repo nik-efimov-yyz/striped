@@ -25,6 +25,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.start
+    Stripe::Customer.stub(retrieve: StripeHelper::Response.new("customer"))
   end
 
   config.after(:each) do
