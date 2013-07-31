@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   def custom_stripe_id_column
   end
 
+  def custom_stripe_id_column=(value)
+  end
+
 end
 
 describe User do
@@ -142,7 +145,7 @@ describe User do
 
         before { user.stripe.stub(email: user.email) }
 
-        it "updates stripes if email is different" do
+        it "updates stripes email if email is different" do
           user.email = "new@example.com"
           user.stripe.should_receive(:email=).with("new@example.com")
           user.save
@@ -184,18 +187,107 @@ describe User do
         it { should be_nil }
       end
 
-      context "custom stripe id field" do
-        before do
-          Striped.stub(stripe_customer_id_column: :custom_stripe_id_column)
-          user.stub(custom_stripe_id_column: "custom column stripe id")
+
+    end
+
+  end
+
+  describe "#stripe_identifier" do
+
+    subject { user.stripe_identifier }
+
+    context "default configuration" do
+      it "calls #stripe_customer_id method" do
+        user.should_receive(:stripe_customer_id)
+        subject
+      end
+    end
+
+    context "custom configuration" do
+      before { Striped.stub(stripe_customer_id_column: :custom_stripe_id_column) }
+      it "calls the custom method" do
+        user.should_receive(:custom_stripe_id_column)
+        subject
+      end
+    end
+
+  end
+
+  describe "#has_stripe_account?" do
+
+    subject { user.has_stripe_account? }
+
+    it "should utilize #stripe_identity method" do
+      user.should_receive(:stripe_identifier)
+      subject
+    end
+
+    context "has stripe id set" do
+      before { user.stub(stripe_customer_id: "123") }
+      it { should be_true }
+    end
+
+    context "doesn't have stripe id set" do
+      before { user.stub(stripe_customer_id: nil) }
+      it { should be_false }
+    end
+
+  end
+
+  describe "#initialize_stripe" do
+
+    let(:user) { FactoryGirl.create :user, email: "joe@example.com" }
+
+    describe "utilization" do
+
+      context "default configuration" do
+
+        context "stripe account already present" do
+          before { user.stub(has_stripe_account?: true) }
+
+          it "doesn't get called" do
+            user.should_not_receive(:initialize_stripe)
+            user.save
+          end
+
         end
 
-        it "calls Stripe::Customer.retrieve with the value from that column" do
-          Stripe::Customer.should_receive(:retrieve).with("custom column stripe id")
-          user.stripe
+        context "stripe account not present" do
+          before { user.stub(has_stripe_account?: false) }
+          it "gets called" do
+            user.should_receive(:initialize_stripe)
+            user.save
+          end
+
         end
+
       end
 
+      context "auto_create_stripe_account set to false" do
+
+        before do
+          user.stub(has_stripe_account?: false)
+          Striped.stub(auto_create_stripe_account: false)
+        end
+
+        it "doesn't get called" do
+          user.should_not_receive(:initialize_stripe)
+          user.save
+        end
+
+      end
+
+    end
+
+    it "sends Stripe request with the email" do
+      Stripe::Customer.should_receive(:create).with({
+          email: "joe@example.com"
+      })
+      user
+    end
+
+    it "sets stripe customer id to the received id" do
+      user.stripe_customer_id.should == "cus_00000000000000"
     end
 
   end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    striped (0.1)
+    striped (0.3)
 
 GEM
   remote: https://rubygems.org/
